@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         sqLiteHelper =new SQLiteHelper(this,DB_NAME,null,DB_VERSION);
         db=sqLiteHelper.getWritableDatabase();
 
-        String s="";
+        String s="test";
         myquene.add(new StringRequest(url, new Listener<String>() {
             @Override
             public void onSuccess(String response) {
