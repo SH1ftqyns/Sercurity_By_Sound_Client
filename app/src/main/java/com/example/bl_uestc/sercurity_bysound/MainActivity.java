@@ -1,25 +1,22 @@
 package com.example.bl_uestc.sercurity_bysound;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.graphics.Palette;
+
 import com.duowan.mobile.example.netroid.netroid.Netroid;
 import com.duowan.mobile.netroid.Listener;
 import com.duowan.mobile.netroid.RequestQueue;
@@ -30,17 +27,16 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static String DB_NAME = "SercuritySound"; //数据库名称
+    private static int DB_VERSION = 1;
     TextView text;
     File diskCacheDir= null;
     int disksize=50*1024*1024;
     RequestQueue myquene = null;
-
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private TextView tv_close;
-    private static String DB_NAME = "SercuritySound"; //数据库名称
-    private static int DB_VERSION = 1;
     //创建数据库
     private SQLiteHelper sqLiteHelper;
     private SQLiteDatabase db;
@@ -62,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         sqLiteHelper =new SQLiteHelper(this,DB_NAME,null,DB_VERSION);
         db=sqLiteHelper.getWritableDatabase();
 
-
+        String s="";
         myquene.add(new StringRequest(url, new Listener<String>() {
             @Override
             public void onSuccess(String response) {

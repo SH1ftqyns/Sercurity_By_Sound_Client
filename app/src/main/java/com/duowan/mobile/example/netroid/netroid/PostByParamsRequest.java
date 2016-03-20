@@ -12,7 +12,7 @@ public class PostByParamsRequest extends StringRequest {
     public PostByParamsRequest(String url, Map<String, String> params, Listener<String> listener) {
         super(Method.POST, url, listener);
         mParams = params;
-        // TODO Auto-generated constructor stub
+
     }
 
     public Map<String, String> getParams() throws AuthFailureError {
