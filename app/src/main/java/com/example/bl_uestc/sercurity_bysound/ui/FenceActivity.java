@@ -43,6 +43,8 @@ import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.LogHelper;
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.SinVoicePlayer;
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.SinVoiceRecognition;
 
+import org.apache.http.client.HttpClient;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -125,6 +127,9 @@ public class FenceActivity extends BaseActivity {
                 circleOptions.visible(true);
                 overlay= baidumap.addOverlay(circleOptions);
 
+
+
+
             }
 
             @Override
@@ -142,6 +147,33 @@ public class FenceActivity extends BaseActivity {
     protected int getLayoutId() {
         return R.layout.activity_fence;
     }
+
+
+    @Override
+    protected void onPause() {
+        // MapView的生命周期与Activity同步，当activity挂起时需调用MapView.onPause()
+        mapview.onPause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        // MapView的生命周期与Activity同步，当activity恢复时需调用MapView.onResume()
+        mapview.onResume();
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        // 退出时销毁定位
+        mLocClient.stop();
+        // 关闭定位图层
+        baidumap.setMyLocationEnabled(false);
+        mapview.onDestroy();
+        mapview = null;
+        super.onDestroy();
+    }
+
 
 
 }
