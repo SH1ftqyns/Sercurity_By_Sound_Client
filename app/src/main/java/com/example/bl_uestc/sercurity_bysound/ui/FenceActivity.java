@@ -142,8 +142,6 @@ public class FenceActivity extends BaseActivity {
                 circleOptions.stroke(new Stroke(5, 0xAA00FF00));   // 设置边框
                 circleOptions.visible(true);
                 overlay= baidumap.addOverlay(circleOptions);
-
-
                 /**
                  * 以下代码为客户端向服务器发送圆心位置信息所用
                  */
