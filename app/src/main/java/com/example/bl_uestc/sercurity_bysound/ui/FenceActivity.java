@@ -38,12 +38,28 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.example.bl_uestc.sercurity_bysound.BaseActivity;
 import com.example.bl_uestc.sercurity_bysound.BluetoothManager;
+import com.example.bl_uestc.sercurity_bysound.FullyHomomorphicEncryption;
 import com.example.bl_uestc.sercurity_bysound.R;
+import com.example.bl_uestc.sercurity_bysound.StringTransfer;
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.LogHelper;
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.SinVoicePlayer;
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.SinVoiceRecognition;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -128,7 +144,46 @@ public class FenceActivity extends BaseActivity {
                 overlay= baidumap.addOverlay(circleOptions);
 
 
+                /**
+                 * 以下代码为客户端向服务器发送圆心位置信息所用
+                 */
+                StringTransfer st=new StringTransfer();
 
+                int longtitude=(int)(marker.getPosition().longitude*Math.pow(10,6) );
+                int latitude=(int)(marker.getPosition().latitude*Math.pow(10,6) );
+
+                FullyHomomorphicEncryption obj = new FullyHomomorphicEncryption();
+                obj.generateKey();
+                //ArrayList<BigInteger> encrypt1 = obj.encrypt(st.StringToBin(String.valueOf(longtitude)));
+                ArrayList<BigInteger> encrypt2 = obj.encrypt(st.StringToBin(String.valueOf(latitude)));
+                ArrayList<BigInteger> encrypt3 = obj.encrypt(st.StringToBin(String.valueOf((int)(distance*Math.pow(10,6))  )));
+                BigInteger encrypt_latitude=encrypt2.get(0);
+                BigInteger encrypt_distance=encrypt3.get(0);
+
+                HttpClient client=new DefaultHttpClient();
+                HttpPost post=new HttpPost("");
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("target","set_up" ));
+                params.add(new BasicNameValuePair("longtitude",String.valueOf(longtitude) ));
+                params.add(new BasicNameValuePair("latitude",encrypt_latitude.toString() ));
+                params.add(new BasicNameValuePair("distance",encrypt_distance.toString() ));
+                try {
+                    post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+                    HttpResponse reponse=client.execute(post);
+                    if(reponse.getStatusLine().getStatusCode()==200){
+                        Toast.makeText(FenceActivity.this, "success", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(FenceActivity.this, "failure", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             }
 
