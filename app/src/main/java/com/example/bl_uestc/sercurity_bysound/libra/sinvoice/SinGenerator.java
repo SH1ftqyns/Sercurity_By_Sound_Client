@@ -17,7 +17,7 @@
 package com.example.bl_uestc.sercurity_bysound.libra.sinvoice;
 
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.Buffer.BufferData;
-import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.LogHelper;
+import  com.example.bl_uestc.sercurity_bysound.libra.sinvoice.LogHelper;
 
 public class SinGenerator {
     private static final String TAG = "SinGenerator";

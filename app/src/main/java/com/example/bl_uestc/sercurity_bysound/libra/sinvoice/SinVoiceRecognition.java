@@ -17,8 +17,8 @@
 package com.example.bl_uestc.sercurity_bysound.libra.sinvoice;
 
 import android.text.TextUtils;
-
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.Buffer.BufferData;
+
 
 public class SinVoiceRecognition implements Record.Listener, Record.Callback, VoiceRecognition.Listener, VoiceRecognition.Callback {
     private final static String TAG = "SinVoiceRecognition";

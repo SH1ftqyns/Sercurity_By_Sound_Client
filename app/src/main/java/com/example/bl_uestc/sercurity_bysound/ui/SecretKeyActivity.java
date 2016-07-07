@@ -24,6 +24,16 @@ import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.LogHelper;
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.SinVoicePlayer;
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.SinVoiceRecognition;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -58,26 +68,27 @@ public class SecretKeyActivity extends BaseActivity  implements SinVoicePlayer.L
         Log.i("main","更换秘钥界面");
         context = getApplicationContext();
         mHanlder = new RegHandler();
-        mHanlder.receive_str = receive_str;
+        //mHanlder.receive_str = receive_str;
         mSinVoicePlayer = new SinVoicePlayer(CODEBOOK);
         mSinVoicePlayer.setListener(this);
-
         mRecognition = new SinVoiceRecognition(CODEBOOK);
         mRecognition.setListener(this);
-
 
 
 
         start_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mRecognition.start();
+
                 String text=genText(6);
                 metesxt=text;
                 mSinVoicePlayer.play(text, false, 1000);//传入参数分别为发送字符串，是否重复，静默间隔
 
             }
         });
+
+
+
     }
 
     @Override
@@ -102,9 +113,7 @@ public class SecretKeyActivity extends BaseActivity  implements SinVoicePlayer.L
     public void onRecognitionEnd() {
         // TODO Auto-generated method stub
         mHanlder.sendEmptyMessage(MSG_RECG_END);
-
-
-        mRecognition.stop();//
+        mRecognition.stop();
 
         if(! othertext.substring(4).equals(jiaoyan(metesxt) ) ){
             findError();
@@ -148,8 +157,54 @@ public class SecretKeyActivity extends BaseActivity  implements SinVoicePlayer.L
     private void finishall(){
         String s1=metesxt;//我方生成的字符串
         String s2=othertext;//对方生成的字符串
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                BigInteger p=new BigInteger("1234547");
+                BigInteger a=new BigInteger("123457");
+                BigInteger b=new BigInteger("1");
+                BigInteger key1=getkey(p,a,new BigInteger(metesxt),new BigInteger(othertext));
+                /**
+                 * GSM交换密钥
+                 */
+
+                String gen=genText(6);
+                /*for (BigInteger b=new BigInteger()){
+
+                }*/
+
+                HttpClient clinet=new DefaultHttpClient();
+                HttpPost post=new HttpPost("");
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("target","changekey"));
+                params.add(new BasicNameValuePair("myuid",""));
+                params.add(new BasicNameValuePair("touid",""));
+                params.add(new BasicNameValuePair("mykey",""));
+
+
+            }
+        }.start();
 
     }
+
+    /**
+     * 根据DH交换密钥，得到最终的密钥
+     * @return
+     */
+    public BigInteger getkey(BigInteger p,BigInteger a,BigInteger key1,BigInteger key2){
+        BigInteger result=new BigInteger("1");
+        for(BigInteger bi=new BigInteger("0");bi.subtract(key1).compareTo(new BigInteger("0"))==-1;bi=bi.add(new BigInteger("1"))  ){
+            result=result.multiply(a).mod(p);
+        }
+
+        for(BigInteger bi=new BigInteger("0");bi.subtract(key2).compareTo(new BigInteger("0"))==-1;bi=bi.add(new BigInteger("1"))  ){
+            result=result.multiply(a).mod(p);
+        }
+
+        return result;
+    }
+
 
     private static class RegHandler extends Handler {
 
@@ -163,27 +218,25 @@ public class SecretKeyActivity extends BaseActivity  implements SinVoicePlayer.L
             switch (msg.what) {
 
                 case MSG_SET_RECG_TEXT:
-                    Toast.makeText(context,"MSG_SET_RECG_TEXT",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context,"MSG_SET_RECG_TEXT",Toast.LENGTH_LONG).show();
                     char ch = (char) msg.arg1;
                     Log.i("main","更换秘钥界面");
                     Log.i("main", "MSG_SET_RECG_TEXT");
                     mTextBuilder.append(ch);
-//                    if (null != receive_str) {
-//                        receive_str.setText(mTextBuilder.toString());
-//                    }
+
                     break;
 
                 case MSG_RECG_START:
-                    Toast.makeText(context,"MSG_RECG_START",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context,"MSG_RECG_START",Toast.LENGTH_LONG).show();
                     Log.i("main", "recognition start");
                     mTextBuilder.delete(0, mTextBuilder.length());
                     break;
 
                 case MSG_RECG_END:
-                    Toast.makeText(context,"MSG_RECG_END",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context,"MSG_RECG_END",Toast.LENGTH_LONG).show();
                     Log.i("main", "recognition end");
                     othertext=mTextBuilder.toString();
-                    Toast.makeText(context, othertext, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context, othertext, Toast.LENGTH_LONG).show();
                     break;
             }
             super.handleMessage(msg);

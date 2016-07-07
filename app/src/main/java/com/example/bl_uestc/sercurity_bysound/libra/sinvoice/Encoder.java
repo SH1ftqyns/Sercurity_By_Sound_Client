@@ -18,6 +18,7 @@ package com.example.bl_uestc.sercurity_bysound.libra.sinvoice;
 
 import java.util.List;
 
+
 import com.example.bl_uestc.sercurity_bysound.libra.sinvoice.Buffer.BufferData;
 
 public class Encoder implements SinGenerator.Listener, SinGenerator.Callback {
@@ -48,21 +49,21 @@ public class Encoder implements SinGenerator.Listener, SinGenerator.Callback {
 
     public Encoder(Callback callback, int sampleRate, int bits, int bufferSize) {
         mCallback = callback;
-        mState = STATE_STOPED; //��ʼ״̬����Ϊֹͣ״̬
-        mSinGenerator = new SinGenerator(this, sampleRate, bits, bufferSize); //mSinGenerator�Ĺ��캯��
+        mState = STATE_STOPED; //初始状态设置为停止状态
+        mSinGenerator = new SinGenerator(this, sampleRate, bits, bufferSize); //mSinGenerator的构造函数
         mSinGenerator.setListener(this);
     }
 
     /**
-     * ��������
+     * 监听函数
      * @param listener
      */
     public void setListener(Listener listener) {
         mListener = listener;
     }
-    
+
     /**
-     * �����������
+     * 编码最大数量
      * @return
      */
     public final static int getMaxCodeCount() {
@@ -70,7 +71,7 @@ public class Encoder implements SinGenerator.Listener, SinGenerator.Callback {
     }
 
     /**
-     * �ж��Ƿ��Ѿ�ֹͣ��
+     * 判断是否已经停止了
      * @return
      */
     public final boolean isStoped() {
@@ -82,14 +83,14 @@ public class Encoder implements SinGenerator.Listener, SinGenerator.Callback {
         encode(codes, duration, 0);
     }
     /**
-     * 
-     * @param codes ���ֱ���
-     * @param duration ʱ��
-     * @param muteInterval ��Ĭʱ��
+     *
+     * @param codes 数字编码
+     * @param duration 时长
+     * @param muteInterval 静默时长
      */
     public void encode(List<Integer> codes, int duration, int muteInterval) {
-        //��������Ǳ���ֹͣ״̬�������
-    	if (STATE_STOPED == mState) {
+        //如果现在是编码停止状态，则进入
+        if (STATE_STOPED == mState) {
             mState = STATE_ENCODING;
 
             if (null != mListener) {

@@ -44,6 +44,9 @@ public class LocationActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setTitle("实时定位");
 
+        /**
+         * 初始化百度地图
+         */
         MyLocationConfiguration.LocationMode mcurrentmode= MyLocationConfiguration.LocationMode.NORMAL;
         mapview = (MapView) findViewById(R.id.bmapView);
         baidumap=mapview.getMap();
@@ -60,9 +63,11 @@ public class LocationActivity extends BaseActivity {
         mLocClient.setLocOption(option);
         mLocClient.start();
 
+        /**
+         * 地图定位
+         */
         MyLocationData locationData=new MyLocationData.Builder().accuracy(40).direction(100)
                 .latitude(30.675822) .longitude(104.103092).build();
-
         baidumap.setMyLocationData(locationData);
         if(isFirstLoc){
             isFirstLoc=false;
